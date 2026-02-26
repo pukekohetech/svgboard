@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PHS SVG Reveal Board</title>
+  <link rel="stylesheet" href="whiteboard.css" />
+  <link rel="stylesheet" href="svg-reveal.css" />
+</head>
+<body class="page-whiteboard">
+  <nav class="appNav" aria-label="PHS Classroom Tools">
+    <a class="appNav__btn" href="index.html" data-nav="index">⏲ PHS Timer</a>
+    <a class="appNav__btn" href="wheel.html" data-nav="wheel">🎡 Wheel</a>
+    <a class="appNav__btn" href="timer.html" data-nav="timer">⏱ Timer</a>
+    <a class="appNav__btn" href="whiteboard.html" data-nav="whiteboard">🧑‍🏫 Whiteboard</a>
+    <a class="appNav__btn is-active" href="svg-reveal.html" data-nav="svgreveal">🧩 SVG Reveal</a>
+  </nav>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <main class="wb">
+    <aside class="dock" aria-label="Tools">
+      <button class="dockBtn is-active" data-tool="select" title="Select (V)">🖱️</button>
+      <button class="dockBtn" data-tool="pen" title="Pen (P)">✏️</button>
+      <button class="dockBtn" data-tool="eraser" title="Eraser (E)">🩹</button>
+      <button class="dockBtn" data-tool="line" title="Line (L)">／</button>
+      <button class="dockBtn" data-tool="arrow" title="Arrow (A)">➜</button>
+      <button class="dockBtn" data-tool="rect" title="Rectangle (R)">▭</button>
+      <button class="dockBtn" data-tool="circle" title="Ellipse (C)">◯</button>
+      <button class="dockBtn" data-tool="text" title="Text (T)">T</button>
+
+      <div class="dockSep"></div>
+      <button class="dockBtn" id="colorBtn" title="Colour + Brush size">🎨 <span class="swatchDot" id="swatchDot"></span></button>
+
+      <div class="dockSep"></div>
+      <button class="dockBtn" id="clearBtn" title="Clear ink">🗑️</button>
+      <button class="dockBtn" id="settingsBtn" title="Settings" aria-haspopup="true" aria-expanded="false">⚙️</button>
+    </aside>
+
+    <section class="stageWrap">
+      <div class="stage" id="stage" aria-label="SVG Reveal Whiteboard Stage">
+        <div class="bgLayer" id="bgLayer" aria-hidden="true">
+          <div class="svgLayer" id="svgLayer" aria-hidden="true"></div>
+          <img id="bgImg" alt="" />
+        </div>
+
+        <canvas id="inkCanvas"></canvas>
+        <canvas id="uiCanvas"></canvas>
+
+        <div class="hud" aria-hidden="true">
+          <div class="hud__pill" id="hudStep">SVG: –</div>
+          <div class="hud__pill">←/→ step • Shift+←/→ jump 5 • Home/End</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="popover is-hidden" id="colorPop" role="dialog" aria-label="Colour and brush size">
+      <div class="popover__row">
+        <label class="label">Colour</label>
+        <input type="color" id="colorInput" value="#111111" />
+      </div>
+      <div class="popover__row">
+        <label class="label">Brush size</label>
+        <input type="range" id="brushSize" min="1" max="40" value="5" />
+        <output id="brushOut" class="out">5</output>
+      </div>
+      <div class="popover__row popover__swatches" id="swatchesRow" aria-label="Quick swatches"></div>
+    </div>
+
+    <div class="panel is-hidden" id="settingsPanel" role="dialog" aria-label="Settings">
+      <header class="panel__head">
+        <div class="panel__title">Settings</div>
+        <button class="panel__close" id="settingsCloseBtn" aria-label="Close">✕</button>
+      </header>
+
+      <div class="panel__body">
+        <div class="panel__group">
+          <div class="panel__label">Board title</div>
+          <div class="panel__row">
+            <input class="panel__input" id="titleInput" placeholder="e.g., Lesson 3 — Fractions" />
+            <button class="panel__btn" id="applyTitleBtn" type="button">Apply</button>
+          </div>
+        </div>
+
+        <div class="panel__group">
+          <div class="panel__label">SVG Reveal</div>
+          <div class="panel__help">Upload an SVG, then use arrow keys to reveal/hide elements one by one.</div>
+          <div class="panel__row">
+            <input class="panel__file" id="svgFile" type="file" accept=".svg,image/svg+xml" />
+          </div>
+          <div class="panel__row" style="gap:8px; flex-wrap:wrap;">
+            <button class="panel__btn" id="svgResetBtn" type="button">Reset to hidden</button>
+            <button class="panel__btn" id="svgShowAllBtn" type="button">Show all</button>
+            <button class="panel__btn" id="svgClearBtn" type="button">Remove SVG</button>
+          </div>
+        </div>
+
+        <div class="panel__group">
+          <div class="panel__label">Boards</div>
+          <div class="panel__row">
+            <select class="panel__select" id="boardSelect"></select>
+            <button class="panel__btn" id="newBoardBtn" type="button">New</button>
+            <button class="panel__btn" id="saveBoardBtn" type="button">Save</button>
+            <button class="panel__btn" id="loadBoardBtn" type="button">Load</button>
+          </div>
+        </div>
+
+        <div class="panel__group">
+          <div class="panel__label">Export</div>
+          <div class="panel__row" style="gap:8px; flex-wrap:wrap;">
+            <button class="panel__btn panel__btn--primary" id="exportBtn" type="button">Download PNG</button>
+            <button class="panel__btn panel__btn--primary" id="exportSvgBtn" type="button">Download SVG</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="svg-reveal.js"></script>
+</body>
+</html>

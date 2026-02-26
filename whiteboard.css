@@ -1,0 +1,302 @@
+.page-whiteboard{ min-height:100vh; }
+
+.wb{
+  width: min(1500px, calc(100vw - 24px));
+  margin: 14px auto 22px;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: start;
+  position: relative;
+}
+
+/* LEFT TOOL DOCK */
+.dock{
+  position: sticky;
+  top: 12px;
+  background: rgba(255,255,255,0.86);
+  border-radius: 18px;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.16);
+  padding: 10px 8px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  z-index: 20; /* ensure popovers appear above stage */
+}
+
+.dockSep{
+  width: 80%;
+  height: 1px;
+  background: rgba(0,0,0,0.12);
+  margin: 6px 0;
+}
+
+.dockBtn{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.92);
+  cursor: pointer;
+  font: 800 16px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  display: grid;
+  place-items: center;
+  user-select: none;
+}
+
+.dockBtn:active{ transform: translateY(1px); }
+
+.dockBtn.is-active{
+  outline: 3px solid rgba(46, 204, 113, 0.35);
+  border-color: rgba(46, 204, 113, 0.6);
+}
+
+.dockBtn--danger{
+  border-color: rgba(231,76,60,0.45);
+}
+
+/* colour button + popover */
+.dockPopWrap{
+  position: relative;
+  display: grid;
+  place-items: center;
+  z-index: 30;
+}
+
+.dockBtn--swatch{ padding:0; }
+
+.swatchLive{
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.22);
+  background: #111111;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
+}
+
+.dockPop{
+  position: absolute;
+  left: 58px;
+  top: 0;
+  width: 240px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.18);
+  padding: 10px;
+  z-index: 60; /* above stage */
+}
+.dockPop.is-hidden{ display:none; }
+
+.dockPop__row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dockPop__label{
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.dockPop__color{
+  width: 54px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(0,0,0,0.14);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.92);
+  cursor: pointer;
+}
+
+.dockPop__range{
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.dockPop__pill{
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.85);
+  font-size: 12px;
+}
+
+.dockPop__note{
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* STAGE */
+.stageWrap{
+  background: rgba(255,255,255,0.86);
+  border-radius: 18px;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.18);
+  padding: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.stage{
+  height: min(78vh, 900px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: #fff;
+  position: relative;
+  touch-action: none;
+}
+
+/* Background layer (DOM, not canvas) */
+#bgLayer{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+#bgImg{
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Canvases */
+#inkCanvas, #uiCanvas{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#inkCanvas{ z-index: 2; }
+#uiCanvas{ z-index: 3; pointer-events: none; }
+
+/* gear */
+.gearBtn{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.92);
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  display: grid;
+  place-items: center;
+  z-index: 6;
+}
+.gearBtn:active{ transform: translateY(1px); }
+
+/* panel */
+.panel{
+  position: absolute;
+  top: 64px;
+  right: 10px;
+  width: min(520px, calc(100% - 20px));
+  max-height: calc(100% - 74px);
+  overflow: auto;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.22);
+  padding: 10px;
+  z-index: 7;
+}
+.panel.is-hidden{ display:none; }
+
+.panel__top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:6px 6px 10px;
+}
+.panel__title{ font:700 14px/1.2 system-ui; opacity:.85; }
+.panel__close{
+  width:36px; height:36px; border-radius:12px;
+  border:1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.92);
+  cursor:pointer; display:grid; place-items:center;
+}
+.panel__close:active{ transform: translateY(1px); }
+
+.panel__grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.panel__group{
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+}
+.panel__group--wide{ grid-column: 1 / -1; }
+.panel__label{ font-size:12px; opacity:.75; }
+
+.panel__row{ display:flex; align-items:center; gap:8px; }
+.panel__row--wrap{ flex-wrap:wrap; }
+
+.panel__btn{
+  height:34px; border-radius:12px;
+  border:1px solid rgba(0,0,0,0.16);
+  background: rgba(255,255,255,0.92);
+  padding:0 10px; cursor:pointer; font:inherit;
+}
+.panel__btn:active{ transform: translateY(1px); }
+.panel__btn--primary{ border-color: rgba(46, 204, 113, 0.55); }
+
+.panel__input, .panel__select{
+  height:34px; border-radius:12px;
+  border:1px solid rgba(0,0,0,0.14);
+  padding:0 10px; font:inherit;
+  background: rgba(255,255,255,0.92);
+  outline:none;
+}
+.panel__input{ flex:1 1 auto; min-width:160px; }
+.panel__select{ flex:1 1 180px; min-width:180px; }
+.panel__file{ flex:1 1 auto; min-width:220px; }
+
+.panel__note{ font-size:12px; opacity:.7; }
+
+.hint{ margin-top:8px; font-size:12px; opacity:.7; }
+
+/* toast */
+.toast{
+  opacity:0; pointer-events:none;
+  position:fixed; left:50%; top:18px; transform:translateX(-50%);
+  padding:10px 14px; border-radius:999px;
+  background:rgba(0,0,0,0.78); color:#fff;
+  font:600 13px system-ui; transition:opacity .2s ease;
+  z-index:9999;
+}
+.toast.show{ opacity:1; }
+
+/* ===== Full available space layout tweaks ===== */
+html, body{ height:100%; }
+.page-whiteboard{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+.page-whiteboard .appNav{ flex:0 0 auto; }
+.wb{
+  flex:1 1 auto;
+  width: calc(100vw - 24px);
+  max-width: none;
+  margin: 12px auto;
+  min-height: 0;
+}
+.stageWrap{ min-height: 0; }
+.stage{
+  height: calc(100vh - 120px);
+  min-height: 420px;
+}
